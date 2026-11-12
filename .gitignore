@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Server and Daemon Runtime Files
+.server.pid
+server.log
+*.pid
+
+# Gradle and Build Cache
+.gradle/
+build/
+app/build/
+*.keystore
+
+# Generated Artifacts and Local Logs
+data/artifacts/*.apk
+data/build_latest.log
+*.apk
+*.tmp
+
+# Environment Files
+.env
+.DS_Store

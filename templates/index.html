@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android Compiler</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- Top Header Row (Compliant: <= 3 words, Minimalist Navigation) -->
+  <header class="app-header">
+    <div class="header-left">
+      <button class="icon-btn" id="btn-menu" aria-label="Menu" onclick="toggleDrawer()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <h1 class="app-title">Android Compiler</h1>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" id="btn-settings" aria-label="Settings" onclick="toggleSettings()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Subheader Overflow Dock Strip -->
+  <nav class="overflow-dock">
+    <div class="dock-pill active-pill" id="dock-target-pill">
+      <span class="dot"></span>
+      <span id="dock-target-name">Target: None</span>
+    </div>
+    <button class="dock-btn" onclick="triggerBuild('debug')">Build Debug</button>
+    <button class="dock-btn" onclick="triggerBuild('release')">Build Release</button>
+    <button class="dock-btn" onclick="triggerBuild('compile')">Compile</button>
+    <button class="dock-btn" onclick="triggerBuild('clean')">Clean</button>
+    <button class="dock-btn" onclick="installApk()">Install APK</button>
+    <button class="dock-btn" onclick="refreshAll()">Refresh</button>
+  </nav>
+
+  <!-- Main Workspace -->
+  <main class="container">
+
+    <!-- Active Target Card -->
+    <section class="card chamber-card">
+      <div class="card-header">
+        <h2>Active Target</h2>
+        <div class="card-actions">
+          <button class="btn btn-sm btn-outline" id="btn-clear-target" onclick="clearTarget()">Unload</button>
+          <button class="btn btn-sm btn-outline" onclick="loadStatus()">Sync</button>
+        </div>
+      </div>
+      <div class="card-body" id="active-target-details">
+        <div class="empty-state" id="target-empty-msg">
+          <p>No project loaded in chamber. Select an Android project below.</p>
+        </div>
+        <div class="target-grid" id="target-meta" style="display: none;">
+          <div class="meta-item">
+            <span class="meta-label">Project Name</span>
+            <span class="meta-val" id="meta-name">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Package</span>
+            <span class="meta-val" id="meta-pkg">—</span>
+          </div>
+          <div class="meta-item full-width">
+            <span class="meta-label">Directory Path</span>
+            <span class="meta-val code-text" id="meta-path">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Build Count</span>
+            <span class="meta-val" id="meta-builds">0</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Last Status</span>
+            <span class="badge" id="meta-status">Ready</span>
+          </div>
+          <div class="meta-item full-width" id="meta-apk-container" style="display: none;">
+            <span class="meta-label">Last Generated APK</span>
+            <span class="meta-val code-text" id="meta-apk">—</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Execution Controls -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Build Actions</h2>
+        <div class="build-timer" id="build-timer-box" style="display: none;">
+          <span class="spinner"></span>
+          <span id="build-timer-text">Building: 0.0s</span>
+        </div>
+      </div>
+      <div class="actions-grid">
+        <button class="action-card" onclick="triggerBuild('debug')">
+          <div class="action-icon">⚙️</div>
+          <div class="action-title">Build Debug</div>
+          <div class="action-desc">assembleDebug APK</div>
+        </button>
+        <button class="action-card" onclick="triggerBuild('release')">
+          <div class="action-icon">🚀</div>
+          <div class="action-title">Build Release</div>
+          <div class="action-desc">assembleRelease APK</div>
+        </button>
+        <button class="action-card" onclick="triggerBuild('compile')">
+          <div class="action-icon">📝</div>
+          <div class="action-title">Compile Sources</div>
+          <div class="action-desc">compileDebugSources</div>
+        </button>
+        <button class="action-card" onclick="triggerBuild('clean')">
+          <div class="action-icon">🧹</div>
+          <div class="action-title">Clean Cache</div>
+          <div class="action-desc">gradle clean</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- Live Build Log Terminal -->
+    <section class="card terminal-card">
+      <div class="card-header">
+        <h2>Build Output</h2>
+        <div class="card-actions">
+          <label class="checkbox-label">
+            <input type="checkbox" id="autoscroll-chk" checked> Auto-scroll
+          </label>
+          <button class="btn btn-sm btn-outline" onclick="fetchLog()">Refresh Log</button>
+          <button class="btn btn-sm btn-outline" onclick="clearLogDisplay()">Clear View</button>
+        </div>
+      </div>
+      <pre class="terminal-body" id="log-console">Ready. Select target and trigger a build action above.</pre>
+    </section>
+
+    <!-- Target Selection Grid -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Target Selection</h2>
+        <button class="btn btn-sm btn-outline" onclick="loadTargets()">Rescan</button>
+      </div>
+      <div class="targets-list" id="targets-container">
+        <p class="loading-text">Scanning for Android projects...</p>
+      </div>
+      <div class="custom-target-input">
+        <input type="text" id="custom-path-input" placeholder="Or enter custom Android project path..." />
+        <button class="btn btn-primary" onclick="loadCustomTarget()">Load Target</button>
+      </div>
+    </section>
+
+    <!-- Compiled APK Artifacts -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Compiled Artifacts</h2>
+        <button class="btn btn-sm btn-outline" onclick="loadArtifacts()">Refresh</button>
+      </div>
+      <div class="artifacts-list" id="artifacts-container">
+        <p class="loading-text">Loading artifacts...</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Side Drawer / Overlay -->
+  <aside class="drawer" id="side-drawer">
+    <div class="drawer-header">
+      <h3>Compiler Navigation</h3>
+      <button class="icon-btn" onclick="toggleDrawer()">✕</button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="#" onclick="toggleDrawer(); refreshAll();">Dashboard</a></li>
+      <li><a href="#" onclick="toggleDrawer(); triggerBuild('debug');">Build Debug</a></li>
+      <li><a href="#" onclick="toggleDrawer(); triggerBuild('release');">Build Release</a></li>
+      <li><a href="#" onclick="toggleDrawer(); triggerBuild('clean');">Clean Project</a></li>
+      <li><a href="#" onclick="toggleDrawer(); installApk();">Install APK</a></li>
+    </ul>
+    <div class="drawer-footer">
+      <p class="author-credit">Elton Boehnen · boehnenelton2024@gmail.com</p>
+      <p class="license-credit">PolyForm Noncommercial 1.0.0</p>
+    </div>
+  </aside>
+
+  <!-- Settings Modal Overlay -->
+  <div class="modal-backdrop" id="settings-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>System Settings & Diagnostics</h3>
+        <button class="icon-btn" onclick="toggleSettings()">✕</button>
+      </div>
+      <div class="modal-body" id="settings-diagnostics">
+        <p>Loading diagnostics...</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="toggleSettings()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast-msg"></div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

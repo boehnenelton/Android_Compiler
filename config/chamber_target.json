@@ -1,0 +1,32 @@
+{
+  "active_target": null,
+  "history": [
+    {
+      "name": "Android_BEJSOM_Editor-debug-b2",
+      "slug": "android_bejsom_editor-debug-b2",
+      "path": "/storage/emulated/0/Admin/Dev/Android/Android_BEJSOM_Editor-debug-b2",
+      "package_name": "com.example",
+      "has_wrapper": false,
+      "loaded_at": "2026-11-12T04:32:21.584176+00:00",
+      "last_action": null,
+      "last_status": "ready",
+      "last_apk": null,
+      "last_apk_size": null,
+      "build_count": 1
+    },
+    {
+      "name": "Android_BEJSOM_Editor-debug-b2",
+      "slug": "android_bejsom_editor-debug-b2",
+      "path": "/storage/emulated/0/Admin/Dev/Android/Android_BEJSOM_Editor-debug-b2",
+      "package_name": "com.example",
+      "has_wrapper": false,
+      "loaded_at": "2026-11-12T04:56:17.013460+00:00",
+      "last_action": null,
+      "last_status": "ready",
+      "last_apk": null,
+      "last_apk_size": null,
+      "build_count": 0
+    }
+  ],
+  "updated_at": "2026-11-12T04:56:17.058048+00:00"
+}
